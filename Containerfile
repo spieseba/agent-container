@@ -1,11 +1,11 @@
 # Use Fedora as base
-FROM fedora
+FROM docker.io/library/fedora:latest
 
 # Set timezone
 ARG TZ=Europe/Berlin
 ENV TZ=${TZ}
 
-# Optional CLIs — toggled at build time (see docker-compose.yaml args).
+# Optional CLIs — toggled at build time (see compose.yaml args).
 # Claude Code and Mistral Vibe are on by default; Codex and Antigravity opt-in.
 ARG INSTALL_CLAUDE=true
 ARG INSTALL_VIBE=true
@@ -19,6 +19,8 @@ RUN dnf install -y --setopt=install_weak_deps=False --allowerasing \
   sudo \
   man-db \
   unzip \
+  tar \
+  gzip \
   gnupg2 \
   vim \
   curl \
@@ -29,18 +31,9 @@ RUN dnf install -y --setopt=install_weak_deps=False --allowerasing \
   hostname \
   && dnf clean all
 
-# nodejs/npm are only needed for the Codex CLI
-RUN if [ "$INSTALL_CODEX" = "true" ]; then \
-      dnf install -y --setopt=install_weak_deps=False nodejs npm && dnf clean all; \
-    fi
-
 # Create an agent user with UID 1000 (Fedora base has no default non-root user)
 RUN groupadd -g 1000 agent \
  && useradd -m -u 1000 -g 1000 -s /bin/bash agent
-
-# Ensure user has access to /usr/local/share
-RUN mkdir -p /usr/local/share/npm-global && \
-  chown -R agent:agent /usr/local/share
 
 # Grant agent user paswordless sudo for all commands
 RUN echo "agent ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/agent \
@@ -53,8 +46,7 @@ USER agent
 WORKDIR /home/agent/workspace
 
 # Set up environment for user
-ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
-ENV PATH=$PATH:/usr/local/share/npm-global/bin:/home/agent/.local/bin
+ENV PATH=$PATH:/home/agent/.local/bin
 ENV EDITOR=vim
 ENV VISUAL=vim
 
@@ -65,9 +57,13 @@ RUN echo '[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"' >> ~/.bashr
 # Install Claude Code
 RUN if [ "$INSTALL_CLAUDE" = "true" ]; then curl -fsSL https://claude.ai/install.sh | bash; fi
 # Install Mistral Vibe CLI
-RUN if [ "$INSTALL_VIBE" = "true" ]; then curl -LsSf https://mistral.ai/vibe/install.sh | bash; fi
+RUN if [ "$INSTALL_VIBE" = "true" ]; then uv tool install mistral-vibe; fi
 # Install Codex
-RUN if [ "$INSTALL_CODEX" = "true" ]; then npm install -g @openai/codex; fi
+RUN if [ "$INSTALL_CODEX" = "true" ]; then \
+      curl -fsSL https://chatgpt.com/codex/install.sh -o /tmp/install-codex.sh \
+      && sh /tmp/install-codex.sh \
+      && rm /tmp/install-codex.sh; \
+    fi
 # Install Antigravity CLI
 RUN if [ "$INSTALL_ANTIGRAVITY" = "true" ]; then curl -fsSL https://antigravity.google/cli/install.sh | bash; fi
 

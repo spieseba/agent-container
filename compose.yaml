@@ -1,20 +1,18 @@
 # Shared configuration
 x-base-service: &base-service
-  image: docker-sandbox
+  image: localhost/docker-sandbox
   build:
     context: .
-    dockerfile: Dockerfile
+    dockerfile: Containerfile
     args:
       TZ: Europe/Berlin
       # CLI build args. 
       # Claude Code, Mistral Vibe, Codex, and Antigravity are on by default 
-      # comment out to disable. Rebuild after changing.
+      # Set an argument to "false" to disable its CLI. Rebuild after changing.
       INSTALL_CLAUDE: "true"
       INSTALL_VIBE: "true"
       INSTALL_CODEX: "true"
       INSTALL_ANTIGRAVITY: "true"
-  security_opt:
-    - label=disable
   volumes:
     - ./workspace:/home/agent/workspace:rw
   stdin_open: true
@@ -26,10 +24,14 @@ services:
   sandbox:
     <<: *base-service
     container_name: sandbox
-  # GPU-enabled 
+    userns_mode: "keep-id:uid=1000,gid=1000"
+  # Legacy GPU configuration; Podman GPU migration is pending (step 6).
   sandbox-gpu:
     <<: *base-service
     container_name: sandbox-gpu
+    security_opt:
+      - label=disable
+    profiles: [gpu]
     deploy:
       resources:
         reservations:
