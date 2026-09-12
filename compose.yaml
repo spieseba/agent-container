@@ -13,8 +13,9 @@ x-base-service: &base-service
       INSTALL_VIBE: "true"
       INSTALL_CODEX: "true"
       INSTALL_ANTIGRAVITY: "true"
+  # Private workspace: run only one service against it at a time.
   volumes:
-    - ./workspace:/home/agent/workspace:rw
+    - ./workspace:/home/agent/workspace:rw,Z
   stdin_open: true
   tty: true
   command: bash
@@ -25,17 +26,15 @@ services:
     <<: *base-service
     container_name: sandbox
     userns_mode: "keep-id:uid=1000,gid=1000"
-  # Legacy GPU configuration; Podman GPU migration is pending (step 6).
+    # Interactive Bash ignores SIGTERM; SIGHUP requests shell shutdown.
+    stop_signal: SIGHUP
+  # Fedora NVIDIA GPU via CDI.
   sandbox-gpu:
     <<: *base-service
     container_name: sandbox-gpu
-    security_opt:
-      - label=disable
+    userns_mode: "keep-id:uid=1000,gid=1000"
+    stop_signal: SIGHUP
+    # Requires container_use_xserver_devices on the Fedora host.
     profiles: [gpu]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    devices:
+      - nvidia.com/gpu=all
