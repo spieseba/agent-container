@@ -1,6 +1,6 @@
 # Shared configuration
 x-base-service: &base-service
-  image: localhost/docker-sandbox
+  image: localhost/agent-container
   build:
     context: .
     dockerfile: Containerfile

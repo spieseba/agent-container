@@ -1,8 +1,8 @@
-# AI CLI Development Container
+# Agent Container
 
-A disposable Fedora container for Claude Code, Mistral Vibe, Codex and
-Antigravity, using rootless Podman. Supports CPU on macOS/Fedora and NVIDIA GPU
-on Fedora. Includes uv, Git, passwordless sudo and config from
+A container for coding agents such as Claude Code, Codex, Mistral Vibe and
+Antigravity. Built on Fedora and runs with rootless Podman. Supports CPU on
+macOS/Fedora and NVIDIA GPU on Fedora. Includes uv, Git, passwordless sudo and config from
 [agent-config](https://github.com/spieseba/agent-config).
 
 ## Setup
