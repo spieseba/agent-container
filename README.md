@@ -11,14 +11,14 @@ Install Podman and select `podman-compose` as its Compose provider. On macOS,
 start a Podman machine with the repository shared into it. Run from this repo:
 
 ```bash
-podman compose build sandbox
+podman compose build agent
 ```
 
 ### CPU (macOS/Fedora)
 
 ```bash
-podman compose up -d sandbox
-podman compose exec sandbox bash
+podman compose up -d agent
+podman compose exec agent bash
 ```
 
 ### NVIDIA GPU (Fedora)
@@ -30,9 +30,9 @@ permission for containers to access mounted X-server device types:
 
 ```bash
 sudo setsebool -P container_use_xserver_devices on
-podman compose stop sandbox
-podman compose --profile gpu up -d --force-recreate sandbox-gpu
-podman compose --profile gpu exec sandbox-gpu bash
+podman compose stop agent
+podman compose --profile gpu up -d --force-recreate agent-gpu
+podman compose --profile gpu exec agent-gpu bash
 ```
 
 Run one service per workspace. The workspace uses private SELinux labels (`:Z`);
