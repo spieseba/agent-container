@@ -8,15 +8,13 @@ macOS/Fedora and NVIDIA GPU on Fedora. Includes uv, Git, passwordless sudo and c
 ## Setup
 
 Install Podman and select `podman-compose` as its Compose provider. On macOS,
-start a Podman machine with the repository shared into it. Run from this repo:
-
-```bash
-podman compose build agent
-```
+start a Podman machine with the repository shared into it. From this repo,
+choose one of the following to build, start and enter a new container.
 
 ### CPU (macOS/Fedora)
 
 ```bash
+podman compose build agent
 podman compose up -d agent
 podman compose exec agent bash
 ```
@@ -30,10 +28,14 @@ permission for containers to access mounted X-server device types:
 
 ```bash
 sudo setsebool -P container_use_xserver_devices on
-podman compose stop agent
-podman compose --profile gpu up -d --force-recreate agent-gpu
+podman compose --profile gpu build agent-gpu
+podman compose --profile gpu up -d agent-gpu
 podman compose --profile gpu exec agent-gpu bash
 ```
+
+The `gpu` profile keeps the GPU service disabled by default on CPU-only hosts.
+The selected provider, `podman-compose` (verified version 1.6.0), requires
+`--profile gpu` to include that service even when named explicitly.
 
 Run one service per workspace. The workspace uses private SELinux labels (`:Z`);
 when switching services, stop the current one and recreate the destination
