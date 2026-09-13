@@ -54,8 +54,10 @@ with `up -d --force-recreate` so its workspace label is applied.
 
 ## Configuration
 
-Edit build arguments in `compose.yaml` for timezone and CLIs. All four CLIs are
-enabled; set an `INSTALL_*` argument explicitly to `"false"` to disable it.
+Edit build arguments in `compose.yaml` for timezone, CLIs and personal config.
+All four CLIs are enabled; set their `INSTALL_*` arguments to `"false"` to disable them.
+Set `INSTALL_AGENT_CONFIG` to `"false"` to skip cloning and installing personal
+config, skills and pets while keeping the selected CLIs installed with default settings.
 Rebuild and recreate to apply image changes. Override `AGENT_CONFIG_REPO` to use
 another config repository.
 

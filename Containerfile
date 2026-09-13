@@ -68,8 +68,10 @@ RUN if [ "$INSTALL_CODEX" = "true" ]; then \
 RUN if [ "$INSTALL_ANTIGRAVITY" = "true" ]; then curl -fsSL https://antigravity.google/cli/install.sh | bash; fi
 
 # Install personal agent config (AGENTS.md/CLAUDE.md, skills, statuslines).
+ARG INSTALL_AGENT_CONFIG=true
 ARG AGENT_CONFIG_REPO=https://github.com/spieseba/agent-config.git
-RUN git clone --depth 1 "${AGENT_CONFIG_REPO}" /home/agent/.agent-config \
+RUN if [ "$INSTALL_AGENT_CONFIG" = "true" ]; then \
+      git clone --depth 1 "${AGENT_CONFIG_REPO}" /home/agent/.agent-config \
  && if [ "$INSTALL_CLAUDE" = "true" ]; then \
       mkdir -p /home/agent/.claude \
       && ln -sf /home/agent/.agent-config/AGENTS.md /home/agent/.claude/CLAUDE.md \
@@ -88,12 +90,14 @@ RUN git clone --depth 1 "${AGENT_CONFIG_REPO}" /home/agent/.agent-config \
       mkdir -p /home/agent/.codex \
       && ln -sf /home/agent/.agent-config/AGENTS.md /home/agent/.codex/AGENTS.md \
       && ln -sf /home/agent/.agent-config/skills /home/agent/.codex/skills \
+      && ln -sf /home/agent/.agent-config/codex/pets /home/agent/.codex/pets \
       && cp /home/agent/.agent-config/codex/config.toml /home/agent/.codex/config.toml; \
     fi \
  && if [ "$INSTALL_ANTIGRAVITY" = "true" ]; then \
       mkdir -p /home/agent/.gemini \
       && ln -sf /home/agent/.agent-config/AGENTS.md /home/agent/.gemini/GEMINI.md \
       && ln -sf /home/agent/.agent-config/skills /home/agent/.gemini/skills; \
+    fi; \
     fi
 
 
