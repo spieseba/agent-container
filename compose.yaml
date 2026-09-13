@@ -17,6 +17,11 @@ x-base-service: &base-service
       INSTALL_AGENT_CONFIG: "true"
       # Uncomment and change the URL to use your own config repository.
       # AGENT_CONFIG_REPO: "https://github.com/spieseba/agent-config.git"
+  # Enhance terminal
+  environment:
+    TERM: xterm-256color
+    COLORTERM: ${COLORTERM:-truecolor}
+    TERM_PROGRAM: ${TERM_PROGRAM:-}
   # Private workspace: run only one service against it at a time.
   volumes:
     - ./workspace:/home/agent/workspace:rw,Z
