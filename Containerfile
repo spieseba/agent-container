@@ -29,6 +29,7 @@ RUN dnf install -y --setopt=install_weak_deps=False --allowerasing \
   jq \
   bubblewrap \
   hostname \
+  gcc-c++ \
   && dnf clean all
 
 # Create an agent user with UID 1000 (Fedora base has no default non-root user)
