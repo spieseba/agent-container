@@ -30,6 +30,7 @@ RUN dnf install -y --setopt=install_weak_deps=False --allowerasing \
   bubblewrap \
   hostname \
   gcc-c++ \
+  procps-ng \
   && dnf clean all
 
 # Create an agent user with UID 1000 (Fedora base has no default non-root user)
