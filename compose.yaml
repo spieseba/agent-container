@@ -33,14 +33,12 @@ services:
   # CPU-only 
   agent:
     <<: *base-service
-    container_name: agent
     userns_mode: "keep-id:uid=1000,gid=1000"
     # Interactive Bash ignores SIGTERM; SIGHUP requests shell shutdown.
     stop_signal: SIGHUP
   # Fedora NVIDIA GPU via CDI.
   agent-gpu:
     <<: *base-service
-    container_name: agent-gpu
     userns_mode: "keep-id:uid=1000,gid=1000"
     stop_signal: SIGHUP
     # Requires container_use_xserver_devices on the Fedora host.
