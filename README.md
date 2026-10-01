@@ -2,12 +2,12 @@
 
 A container for coding agents such as Claude Code, Codex, Mistral Vibe and
 Antigravity. Built on Fedora and runs with rootless Podman. Supports CPU on
-macOS/Fedora and NVIDIA GPU on Fedora. Includes uv, Git, passwordless sudo and config from
-[agent-config](https://github.com/spieseba/agent-config).
+macOS/Fedora hosts and NVIDIA GPU on Fedora hosts. Includes uv, Git, passwordless sudo 
+and my personal [agent-config](https://github.com/spieseba/agent-config).
 
 ## Setup
 
-Install Podman and select `podman-compose` as its Compose provider. On macOS,
+Install Podman with `podman-compose` as its Compose provider. On macOS,
 start a Podman machine with the repository shared into it. From this repo,
 choose one of the following to build, start and enter a new container.
 
@@ -33,10 +33,6 @@ podman compose --profile gpu up -d agent-gpu
 podman compose --profile gpu exec agent-gpu bash
 ```
 
-The `gpu` profile keeps the GPU service disabled by default on CPU-only hosts.
-The selected provider, `podman-compose` (verified version 1.6.0), requires
-`--profile gpu` to include that service even when named explicitly.
-
 Run one service per workspace. The workspace uses private SELinux labels (`:Z`);
 when switching services, stop the current one and recreate the destination
 with `up -d --force-recreate` so its workspace label is applied.
@@ -54,12 +50,13 @@ with `up -d --force-recreate` so its workspace label is applied.
 
 ## Configuration
 
-Edit build arguments in `compose.yaml` for timezone, CLIs and personal config.
-All four CLIs are enabled; set their `INSTALL_*` arguments to `"false"` to disable them.
-Set `INSTALL_AGENT_CONFIG` to `"false"` to skip cloning and installing personal
-config, skills and pets while keeping the selected CLIs installed with default settings.
+Edit build arguments in `compose.yaml` for timezone, CLIs and personal config. For instance:
+- By default, all four CLIs are enabled; set their `INSTALL_*` arguments to `"false"` to disable them.
+- Set `INSTALL_AGENT_CONFIG` to `"false"` to skip cloning and installing personal agent config.
 Rebuild and recreate to apply image changes. Override `AGENT_CONFIG_REPO` to use
 another config repository.
+
+## Note of caution 
 
 Agents have network access, unrestricted sudo inside the container, and access
 to mounted files and container credentials. No host credential directories or
