@@ -24,7 +24,7 @@ x-base-service: &base-service
     TERM_PROGRAM: ${TERM_PROGRAM:-}
   # Private workspace: run only one service against it at a time.
   volumes:
-    - ./workspace:/home/agent/workspace:rw,Z
+    - ./workspace:/home/agent/workspace:rw,z
   stdin_open: true
   tty: true
   command: bash
